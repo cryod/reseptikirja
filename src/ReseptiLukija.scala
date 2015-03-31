@@ -1,0 +1,8 @@
+
+
+/**
+ * @author Rasmus
+ */
+class ReseptiLukija() {
+  
+}
