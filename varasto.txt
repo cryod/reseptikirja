@@ -1,0 +1,2 @@
+maito, l, 2, 1000, laktoosi
+vesi, l, 1, 1000
