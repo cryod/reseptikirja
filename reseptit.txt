@@ -1,0 +1,16 @@
+#makkarasoosi
+3
+makkara, 1.0, kpl
+peruna, 2.0, kpl
+suola, 1.0, tl
+Keitä perunat, paista makkara. Tsädäm.
+#perunamuusi
+3
+peruna, 5.0, kpl
+suola, 2.0, tl
+kerma, 1.0, dl
+Muussaa perunat, lisää kerma ja suola. Sekoita lisää. Tarjoile
+#asdf
+1
+muna, 1.0, kpl
+lolleroo
