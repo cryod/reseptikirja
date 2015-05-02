@@ -8,6 +8,9 @@ package reseptikirja
 import java.io._
 import scala.collection.mutable._
 class ReseptiLukija {
+  
+  def muodostaResepti
+  
   def lataaReseptit: Buffer[Resepti] = {
     var reseptit = Buffer.empty[Resepti]
     val tiedostonLukija = try {

@@ -9,6 +9,16 @@ import java.io._
 import scala.collection.mutable._
 
 class VarastoLukija {
+  def muodostaAine(rivi: String): Aine ={
+    var siistitty = rivi.replaceAll(" ", "").split(",")
+    val nimi = siistitty(0)
+    val maara = siistitty(1).toDouble
+    val yksikko = siistitty(2)
+    val tiheys = siistitty(3).toInt
+    val allergeeni = if(siistitty.size == 5) siistitty(4) else ""
+    new Aine(nimi, maara, yksikko, tiheys, allergeeni)
+  }
+  
   def lataaVarasto: Buffer[Aine] = {
     var varasto = Buffer.empty[Aine]
     val tiedostoLukija = try {
@@ -23,15 +33,7 @@ class VarastoLukija {
     try {
       var rivi = rivinLukija.readLine()
       while (rivi != null) {
-        var siistitty = rivi.replaceAll(" ", "")
-        var katkaistu = siistitty.split(",")
-
-        val nimi = katkaistu(0)
-        val yksikko = katkaistu(1)
-        val maara = katkaistu(2).toDouble
-        val tiheys = katkaistu(3).toInt
-        val allergeeni = if (katkaistu.size == 5) katkaistu(4) else ""
-        varasto += new Aine(nimi, yksikko, maara, tiheys, allergeeni)
+        varasto += muodostaAine(rivi)
         rivi = rivinLukija.readLine()
 
       }

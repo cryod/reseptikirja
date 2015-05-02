@@ -1,3 +1,4 @@
-maito, l, 2.0, 2000, laktoosi
-vesi, l, 1.0, 1000, 
-kahvi, g, 500.0, 500, 
+maito, 2.0, l, 2000, laktoosi
+vesi, 1.0, l, 1000, 
+kahvi, 500.0, g, 500, 
+muna, 3.0, kpl, 1200, 
