@@ -39,7 +39,7 @@ class Reseptikirja {
     }
   }
     
-  def lisaaResepti()  
+  
     
   }
   
