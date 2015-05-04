@@ -58,7 +58,7 @@ class VarastoLukija {
     try {
       val kirjoittaja = new PrintWriter(new File("varasto.txt"))
       for (x <- varasto) {
-        kirjoittaja.write(x.nimi + ", " + x.yksikko + ", " + x.maara + ", " + x.tiheys + ", " + x.allergeeni + "\n")
+        kirjoittaja.write(x.nimi + ", " + x.maara + ", " + x.yksikko + ", " + x.tiheys + ", " + x.allergeeni + "\n")
       }
       kirjoittaja.close()
       true

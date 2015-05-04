@@ -24,6 +24,8 @@ class Muunnos {
         case "rkl" => return (lisattavaMaara / (tiheys.toDouble / 1000.0)) * 1000.0 / 15.0
         case "tl" => return (lisattavaMaara / (tiheys.toDouble / 1000.0)) * 1000.0 / 5.0
         case "mm" => return (lisattavaMaara / (tiheys.toDouble / 1000.0)) * 1000.0
+        case _ => return lisattavaMaara
+         
       }
       case "g" => varastoYksikko match {
         case "kg" => return lisattavaMaara / 1000
@@ -33,6 +35,7 @@ class Muunnos {
         case "rkl" => return (lisattavaMaara / tiheys.toDouble) * 1000.0 / 15.0
         case "tl" => return (lisattavaMaara / tiheys.toDouble) * 1000.0 / 5.0
         case "mm" => return (lisattavaMaara / tiheys.toDouble) * 1000.0
+        case _ => return lisattavaMaara
       }
       case "l" => varastoYksikko match {
         case "kg" => return (tiheys.toDouble * lisattavaMaara) / 1000.0
@@ -42,6 +45,7 @@ class Muunnos {
         case "rkl" => return lisattavaMaara * 1000.0 / 15.0
         case "tl" => return lisattavaMaara * 1000.0 / 5.0
         case "mm" => return lisattavaMaara
+        case _ => return lisattavaMaara
       }
       case "dl" => varastoYksikko match {
         case "kg" => return (tiheys.toDouble * lisattavaMaara) / 100.0
@@ -51,6 +55,7 @@ class Muunnos {
         case "rkl" => return lisattavaMaara * 100.0 / 15.0
         case "tl" => return lisattavaMaara * 100.0 / 5.0
         case "mm" => return lisattavaMaara * 100.0
+        case _ => return lisattavaMaara
       }
       case "rkl" => varastoYksikko match {
         case "kg" => return (tiheys.toDouble * ((lisattavaMaara * 15.0) / 1000.0)) / 1000.0
@@ -60,6 +65,7 @@ class Muunnos {
         case "rkl" => return lisattavaMaara
         case "tl" => return lisattavaMaara * 3
         case "mm" => return lisattavaMaara * 15.0
+        case _ => return lisattavaMaara
       }
       case "tl" => varastoYksikko match {
         case "kg" => return (tiheys.toDouble * ((lisattavaMaara * 5.0) / 1000.0)) / 1000.0
@@ -69,6 +75,7 @@ class Muunnos {
         case "rkl" => return lisattavaMaara / 3
         case "tl" => return lisattavaMaara
         case "mm" => return lisattavaMaara * 5.0
+        case _ => return lisattavaMaara
       }
       case "mm" => varastoYksikko match {
         case "kg" => return (tiheys.toDouble * (lisattavaMaara / 1000.0)) / 1000.0
@@ -78,7 +85,10 @@ class Muunnos {
         case "rkl" => return lisattavaMaara / 15.0
         case "tl" => return lisattavaMaara / 5.0
         case "mm" => return lisattavaMaara
+        case _ => return lisattavaMaara
       }
+      case "kpl" => return lisattavaMaara
+      case _ => return lisattavaMaara
     }
   }
 }

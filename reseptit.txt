@@ -1,3 +1,10 @@
+#
+0
+
+#pulla
+1
+voitaikina, 4.0, dl
+asdfasdfasdf
 #makkarasoosi
 3
 makkara, 1.0, kpl
@@ -8,9 +15,14 @@ Keitä perunat, paista makkara. Tsädäm.
 3
 peruna, 5.0, kpl
 suola, 2.0, tl
-kerma, 1.0, dl
+maito, 1.0, dl
 Muussaa perunat, lisää kerma ja suola. Sekoita lisää. Tarjoile
-#asdf
+#voitaikina
 1
-muna, 1.0, kpl
-lolleroo
+voi, 1.0, dl
+fdsaasdf
+#perunakeitto
+2
+peruna, 5.0, kpl
+vesi, 2.0, l
+Keitä vesi, heitä potut perään.

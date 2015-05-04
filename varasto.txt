@@ -1,4 +1,8 @@
-maito, 2.0, l, 2000, laktoosi
-vesi, 1.0, l, 1000, 
-kahvi, 500.0, g, 500, 
+voi, 1.0, l, 1000, 
+suola, 4.0, dl, 1000, 
+maito, 1.8, l, 2000, laktoosi
 muna, 3.0, kpl, 1200, 
+kahvi, 500.0, g, 500, 
+peruna, 5.0, kpl, 1500, 
+makkara, 2.0, kpl, 1000, liha
+vesi, 11.0, l, 1000, 
