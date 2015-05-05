@@ -22,8 +22,8 @@ object TextUI extends App {
       var reseptiEtsiMenu = false
       var varastoMenu = false
     }
-    if(!mainMenu && !reseptiMenu && !reseptiMuokkaaMenu
-        && !reseptiEtsiMenu && !varastoMenu) mainMenu = true
+    if (!mainMenu && !reseptiMenu && !reseptiMuokkaaMenu
+      && !reseptiEtsiMenu && !varastoMenu) mainMenu = true
     println("------------------------------------------------------")
   }
   println("Varasto ja reseptit tallennetaan sekä ohjelma suljetaan.")
@@ -262,7 +262,7 @@ object TextUI extends App {
       println()
       print("Syötä puuttuvien aineiden maksimimäärä: ")
       var maara = readLine()
-      if(maara.isEmpty()) maara = "1"
+      if (maara.isEmpty()) maara = "1"
       val reseptit = reseptikirja.etsija.varastossa(maara.toInt, reseptikirja.reseptit, reseptikirja.varasto, allergeeni)
       if (reseptit.isEmpty) println("Yhtään reseptiä ei löytynyt.")
       else valitseResepti(reseptit)
@@ -300,13 +300,13 @@ object TextUI extends App {
     }
     println("Syöte ei vastannut yhdenkään reseptin nimeä.")
   }
-  
-  def kysyAllergeeni:String ={
-    try{
-    println()
-    print("Syötä poisjätettävä allergeeni tai tyhjä rivi: ")
-    val allergeeni= readLine()
-    allergeeni
+
+  def kysyAllergeeni: String = {
+    try {
+      println()
+      print("Syötä poisjätettävä allergeeni tai tyhjä rivi: ")
+      val allergeeni = readLine()
+      allergeeni
     } catch {
       case _: Throwable => {
         println("Virhe syötteessä, allergeeniä ei lisätty hakuun.")
