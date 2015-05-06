@@ -4,16 +4,19 @@ class Muunnos {
   
   
   
-  
+  // Muuntaa määrät samoihin yksiköihin ja laskee ne yhteen. Palauttaa lopputuloksen. Käytetään kun lisätään varastoon tavaraa.
   def lisaaVarastoon(lisattavaMaara: Double, lisattavaYksikko: String, varastoMaara: Double, varastoYksikko: String, tiheys: Int): Double = {
       varastoMaara+palautaOikeassaYksikossa(lisattavaYksikko, lisattavaMaara, varastoYksikko, tiheys)
   }
+  
+  // Sama kuin yllä, mutta vähentää varastosta. Minimimäärä on nolla. Käytetään varastosta vähentäessä.
   def vahennaVarastosta(vahennettavaMaara: Double, vahennettavaYksikko: String, varastoMaara: Double, varastoYksikko: String, tiheys: Int): Double = {
       val muunnettuMaara = palautaOikeassaYksikossa(vahennettavaYksikko, vahennettavaMaara, varastoYksikko, tiheys)
       if(muunnettuMaara > varastoMaara) return 0.0
       else varastoMaara-muunnettuMaara
   }
-
+  
+  // Hoitaa yksikkömuunnokset. Sisältää vain yleisimmät käytettävät yksiköt. Ei muuta kappaleista miksikään, sillä keskimääräinen tilavuus puuttuu.
   def palautaOikeassaYksikossa(lisattavaYksikko: String, lisattavaMaara: Double, varastoYksikko: String, tiheys: Int): Double = {
     lisattavaYksikko match {
       case "kg" => varastoYksikko match {
