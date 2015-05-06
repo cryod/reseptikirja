@@ -9,16 +9,20 @@ import java.io._
 import scala.collection.mutable._
 
 class VarastoLukija {
-  def muodostaAine(rivi: String): Aine ={
-    var siistitty = rivi.replaceAll(" ", "").split(",")
-    val nimi = siistitty(0)
-    val maara = siistitty(1).toDouble
-    val yksikko = siistitty(2)
-    val tiheys = siistitty(3).toInt
-    val allergeeni = if(siistitty.size == 5) siistitty(4) else ""
+
+  // Aineen muodostusmetodi. K‰ytet‰‰n varaston lataamisessa sek‰ 
+  // uusien aineiden lis‰‰misess‰ muutenkin.
+  def muodostaAine(rivi: String): Aine = {
+    var katkaistu = rivi.split(",")
+    val nimi = katkaistu(0).trim()
+    val maara = katkaistu(1).toDouble
+    val yksikko = katkaistu(2).trim()
+    val tiheys = katkaistu(3).toInt
+    val allergeeni = if (katkaistu.size == 5) katkaistu(4).trim() else ""
     new Aine(nimi, maara, yksikko, tiheys, allergeeni)
   }
-  
+
+  // Ladataan varasto tiedostosta  muistiin. Ajetaan k‰ynnistyksen yhteydess‰.
   def lataaVarasto: Buffer[Aine] = {
     var varasto = Buffer.empty[Aine]
     val tiedostoLukija = try {
@@ -29,13 +33,13 @@ class VarastoLukija {
         return varasto
     }
     val rivinLukija = new BufferedReader(tiedostoLukija)
-
+    
+    // Luetaan rivi kerrallaan ja lis‰t‰‰n aine varastoon.
     try {
       var rivi = rivinLukija.readLine()
       while (rivi != null) {
         varasto += muodostaAine(rivi)
         rivi = rivinLukija.readLine()
-
       }
       varasto
     } catch {
@@ -54,6 +58,7 @@ class VarastoLukija {
     }
   }
 
+  // Tallennetaan varasto tiedostoon. Ajetaan sulkemisen yhteydess‰, tai erikseen kutsuttuna.
   def tallennaVarasto(varasto: Buffer[Aine]): Boolean = {
     try {
       val kirjoittaja = new PrintWriter(new File("varasto.txt"))

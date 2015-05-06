@@ -9,8 +9,7 @@ import java.io._
 import scala.collection.mutable._
 class ReseptiLukija {
   
-  
-  
+  // Lataa reseptit tiedostosta. Ajetaan k‰ynnistyksen yhteydess‰.
   def lataaReseptit: Buffer[Resepti] = {
     var reseptit = Buffer.empty[Resepti]
     val tiedostonLukija = try {
@@ -21,7 +20,10 @@ class ReseptiLukija {
         return reseptit
     }
     val rivinLukija = new BufferedReader(tiedostonLukija)
-
+    
+    // Lukee reseptin kerrallaan, kunnes tiedosto p‰‰ttyy. Reseptien v‰liss‰ voi olla tyhji‰ rivej‰
+    // mutta yhden reseptin pit‰‰ olla aina per‰kk‰isill‰ riveill‰.
+    // Reseptin alku tunnistetaan # merkill‰, jonka j‰lkeen haetaan aineet.
     try {
       var rivi = rivinLukija.readLine()
       while (rivi != null) {
@@ -30,16 +32,19 @@ class ReseptiLukija {
           rivi = rivinLukija.readLine()
           val aineMaara = rivi.toInt
           var aineet = Buffer.empty[(String, Double, String)]
+          // K‰yd‰‰n aineet l‰pi yksi kerrallaan. Siistit‰‰n turhat v‰lit pois.
+          // Tallennetaan bufferiin, joka lopulta muutetaan vectoriksi kun muutetaan reseptiksi.
           for (x <- 0 until aineMaara) {
             rivi = rivinLukija.readLine()
-            var siistitty = rivi.replaceAll(" ", "")
-            var katkaistu = siistitty.split(",")
-            aineet += ((katkaistu(0), katkaistu(1).toDouble, katkaistu(2)))
+            var katkaistu = rivi.split(",")
+            var nimi = katkaistu(0).trim()
+            var yksikko = katkaistu(2).trim()
+            aineet += ((nimi, katkaistu(1).toDouble, yksikko))
           }
           rivi = rivinLukija.readLine()
           reseptit += new Resepti(nimi, aineet.toVector, rivi)
           rivi = rivinLukija.readLine()
-        }
+        } else rivi = rivinLukija.readLine()
       }
       reseptit
 
@@ -59,6 +64,9 @@ class ReseptiLukija {
       rivinLukija.close()
     }
   }
+
+  
+  // Tallentaa reseptit tiedostoon. Ajetaan ohjelman sulkemisen yhteydess‰, tai erikseen kutsuttuna.
   def tallennaReseptit(reseptit: Buffer[Resepti]): Boolean = {
     try {
       val kirjoittaja = new PrintWriter(new File("reseptit.txt"))
