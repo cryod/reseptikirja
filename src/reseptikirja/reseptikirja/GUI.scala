@@ -67,7 +67,8 @@ object GUI extends SimpleSwingApplication {
       editable = false
       wordWrap = true
       lineWrap = true
-      text = "Tervetuloa käyttämään reseptikirjaa.\nValitse haluamasi toiminto vasemmalta laidalta, ja seuraa ohjeita näytöllä."
+      text = "Tervetuloa käyttämään reseptikirjaa.\nValitse haluamasi toiminto vasemmalta laidalta, ja seuraa ohjeita näytöllä.\nTeksti syötetään ikkunan alalaidassa olevaan tekstikenttään."
+      append("\nOhjelma suljetaan\"Ohjelma\" valikosta. Sulkemisen yhteydessä varasto ja reseptit tallennetaan.")
     }
     // Input laatikko ja sille kuuntelu
     val input = new TextField(20)
