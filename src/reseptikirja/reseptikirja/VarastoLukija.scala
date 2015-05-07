@@ -17,7 +17,7 @@ class VarastoLukija {
     val nimi = katkaistu(0).trim()
     val maara = katkaistu(1).toDouble
     val yksikko = katkaistu(2).trim()
-    val tiheys = katkaistu(3).toInt
+    val tiheys = katkaistu(3).trim().toInt
     val allergeeni = if (katkaistu.size == 5) katkaistu(4).trim() else ""
     new Aine(nimi, maara, yksikko, tiheys, allergeeni)
   }
@@ -50,7 +50,8 @@ class VarastoLukija {
         println("Virheellinen syöte.")
         return varasto
       case e: NumberFormatException =>
-        println("Syötteessä numeron paikalla virheellistä tietoa")
+        println(e.getMessage)
+        println("Varaston syötteessä numeron paikalla virheellistä tietoa")
         return varasto
     } finally {
       tiedostoLukija.close()

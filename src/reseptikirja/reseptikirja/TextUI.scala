@@ -4,16 +4,19 @@ import java.io._
 import scala.collection.mutable._
 
 object TextUI extends App {
-
+  
+  
+  // Valikkologiikkaa
   var exitFlag = false
   var mainMenu = true
   var reseptiMenu = false
   var reseptiMuokkaaMenu = false
   var reseptiEtsiMenu = false
   var varastoMenu = false
+  // Avataan kirja
   val reseptikirja = new Reseptikirja
-
   println("Tervetuloa reseptikirjaan. \nValitse toiminto syöttämällä toiminnon edessä oleva numero.")
+  // Haetaan seuraava toiminto niin pitkään kun ei sammuteta
   while (!exitFlag) {
     seuraavaToiminto
     if (mainMenu) {
@@ -26,11 +29,16 @@ object TextUI extends App {
       && !reseptiEtsiMenu && !varastoMenu) mainMenu = true
     println("------------------------------------------------------")
   }
+  // Suljettaessa tehdään nämä
   println("Varasto ja reseptit tallennetaan sekä ohjelma suljetaan.")
   reseptikirja.tallennaReseptit
   reseptikirja.tallennaVarasto
 
+  // Valikkojen käytännön totetutus
+  // Tarkistetaan mikä flag on päällä, jotta tiedetään mitä tehdä.
+  // *** erottaa if-else lauseet, --- erottaa caset toisistaan
   def seuraavaToiminto {
+//*********************************************
     if (mainMenu) {
       println
       println("1. Reseptit")
@@ -39,17 +47,22 @@ object TextUI extends App {
       print("Valittu toiminto: ")
       val luettu = readLine()
       luettu match {
+//----------------------------------------
         case "1" => {
           mainMenu = false
           reseptiMenu = true
         }
+//----------------------------------------        
         case "2" => {
           mainMenu = false
           varastoMenu = true
         }
+//----------------------------------------        
         case "0" => exitFlag = true
-        case _ =>
+//----------------------------------------        
+        case _ =>   
       }
+//*********************************************      
     } else if (reseptiMenu) {
       println
       println("1. Etsi reseptejä")
@@ -58,20 +71,25 @@ object TextUI extends App {
       print("Valittu toiminto: ")
       val luettu = readLine()
       luettu match {
+//----------------------------------------        
         case "1" => {
           reseptiMenu = false
           reseptiEtsiMenu = true
         }
+//----------------------------------------        
         case "2" => {
           reseptiMenu = false
           reseptiMuokkaaMenu = true
         }
+//----------------------------------------        
         case "0" => {
           reseptiMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case _ =>
       }
+//*********************************************      
     } else if (reseptiMuokkaaMenu) {
       println
       println("1. Lisää resepti")
@@ -80,22 +98,27 @@ object TextUI extends App {
       print("Valittu toiminto: ")
       val luettu = readLine()
       luettu match {
+//----------------------------------------        
         case "1" => {
           lisaaResepti
           reseptiMuokkaaMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case "2" => {
           poistaResepti
           reseptiMuokkaaMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case "0" => {
           reseptiMuokkaaMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case _ =>
       }
+//*********************************************      
     } else if (reseptiEtsiMenu) {
       println
       println("1. Etsi nimen perusteella")
@@ -105,28 +128,33 @@ object TextUI extends App {
       print("Valittu toiminto: ")
       val luettu = readLine()
       luettu match {
+//----------------------------------------        
         case "1" => {
           etsiNimella
           reseptiEtsiMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case "2" => {
           etsiKotona
           reseptiEtsiMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case "3" => {
           etsiAine
           reseptiEtsiMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case "0" => {
           reseptiEtsiMenu = false
           mainMenu = true
         }
+//----------------------------------------        
         case _ =>
       }
-
+//*********************************************
     } else if (varastoMenu) {
       println
       println("1. Tarkista varastotilanne")
@@ -149,17 +177,19 @@ object TextUI extends App {
       }
     }
   }
-
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+  
+  // Reseptin lisäys 
   def lisaaResepti {
+    // try-catch lohkot, koska otetaan tekstiä suoraan komentoriviltä.
     try {
       print("Syötä reseptin nimi: ")
       val nimi = readLine()
       var aineet = Buffer.empty[(String, Double, String)]
       println("Kun kaikki aineet on syötetty, syötä tyhjät rivit.")
       var flag = false
-
+      // Kierretään niin pitkään läpi kun on syötettäviä aineita
       while (!flag) {
-
         print("Syötä aineen nimi: ")
         val nimiA = readLine()
         print("Syötä määrä: ")
@@ -177,6 +207,8 @@ object TextUI extends App {
       case _: Throwable => println("Virheellinen syöte.")
     }
   }
+  
+  // Reseptin poisto. Pyydetään nimi, katsotaan löytyykö ja poistetaan jos mahdollsita.
   def poistaResepti {
     print("Syötä poistettavan reseptin nimi: ")
     val nimi = readLine()
@@ -186,12 +218,15 @@ object TextUI extends App {
     } else println("Reseptiä ei löydetty.")
   }
 
+  // Tulostetaan varaston sisältö aine kerrallaan.
   def tulostaVarasto {
     println
     println("Varastosta löytyvät aineet: ")
     println("nimi|määrä|yksikkö|tiheys(g/l)|mahdollinen allergeeni")
     reseptikirja.varasto.values.foreach { println(_) }
   }
+  
+  // Lisätään varastoon aine(tta). Jos ainetta on jo, nimi, määrä, yksikkö riittää, muuten kysytään tiheys ja allergeeni.
   def lisaaVarastoon {
     try {
       print("Syötä aineen nimi: ")
@@ -217,8 +252,9 @@ object TextUI extends App {
     } catch {
       case _: Throwable => println("Virhe syötteessä.")
     }
-
   }
+  
+  // Vähennetään ainetta varastosta. Kysytään nimi, määrä, yksikkö. Jos ainetta ei löydy, ei tehdä mitään.
   def vahennaVarastosta {
     try {
       print("Syötä vähennettävän aineen nimi: ")
@@ -237,6 +273,7 @@ object TextUI extends App {
     }
   }
 
+  // Poistetaan aine kokonaan varastosta. Jos ei löydy, ei tehdä mitään.
   def poistaVarastosta {
     print("Syötä poistettavan aineen nimi: ")
     val nimi = readLine()
@@ -245,7 +282,8 @@ object TextUI extends App {
       println("Aine poistettu.")
     } else println("Ainetta ei löydetty.")
   }
-
+  
+  // Etsitään resepti nimellä. Jos ei löydy yhtään, todetaan niin. Muuten valitaan haluttu resepti erillisellä metodilla.
   def etsiNimella {
     val allergeeni = kysyAllergeeni
     println()
@@ -255,15 +293,16 @@ object TextUI extends App {
     if (reseptit.isEmpty) println("Yhtään reseptiä ei löytynyt.")
     else valitseResepti(reseptit)
   }
-
+  
+  // Etsitään varastosta löytyvien aineiden perusteella. Kysytään puuttuvien aineiden maksimimäärä. Lopulta valitaan erillisellä metodilla.
   def etsiKotona {
     try {
       val allergeeni = kysyAllergeeni
       println()
       print("Syötä puuttuvien aineiden maksimimäärä: ")
       var maara = readLine()
-      if (maara.isEmpty()) maara = "1"
-      val reseptit = reseptikirja.etsija.varastossa(maara.toInt, reseptikirja.reseptit, reseptikirja.varasto, allergeeni)
+      if (maara.isEmpty()) maara = "0"
+      val reseptit = reseptikirja.etsija.kotona(maara.toInt, reseptikirja.reseptit, reseptikirja.varasto, allergeeni, reseptikirja.muunnos)
       if (reseptit.isEmpty) println("Yhtään reseptiä ei löytynyt.")
       else valitseResepti(reseptit)
     } catch {
@@ -271,6 +310,7 @@ object TextUI extends App {
     }
   }
 
+  // Etsitään resepti tietyn raaka-aineen perusteella. Taas valitaan lopulta.
   def etsiAine {
     try {
       val allergeeni = kysyAllergeeni
@@ -285,6 +325,7 @@ object TextUI extends App {
     }
   }
 
+  // Tulostaa kaikki löydettyjen reseptien nimet. Tulostaa sen jälkeen valitun reseptin kokonaan.
   def valitseResepti(reseptit: Buffer[Resepti]) {
     println()
     println("Löydetyt reseptit:")
@@ -301,6 +342,7 @@ object TextUI extends App {
     println("Syöte ei vastannut yhdenkään reseptin nimeä.")
   }
 
+  // Kysyy mahdollisen poisjätettävän allergeenin ja palauttaa sen.
   def kysyAllergeeni: String = {
     try {
       println()
