@@ -38,7 +38,7 @@ class VarastoLukija {
     try {
       var rivi = rivinLukija.readLine()
       while (rivi != null) {
-        varasto += muodostaAine(rivi)
+        if(!rivi.isEmpty())varasto += muodostaAine(rivi)
         rivi = rivinLukija.readLine()
       }
       varasto

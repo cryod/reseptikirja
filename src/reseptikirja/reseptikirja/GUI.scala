@@ -305,7 +305,7 @@ object GUI extends SimpleSwingApplication {
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiMaara" => {
           maaraT = teksti
-          output.text = "Syötä yksikkö."
+          output.text = "Syötä yksikkö.\nMahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm"
           tila = "lisaaReseptiYksikko"
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiYksikko" => {
@@ -345,7 +345,7 @@ object GUI extends SimpleSwingApplication {
     }
 
     def tarkistaVarasto {
-      output.text = "Varaston sisältö:\nnimi|määrä|yksikkö|tiheys(g/l)|allergeeni\n"
+      output.text = "Varaston sisältö:\nnimi | määrä | yksikkö | tiheys(g/l) | allergeeni\n"
       reseptikirja.varasto.values.foreach { x => output.append(x.toString() + "\n") }
     }
 
@@ -364,7 +364,7 @@ object GUI extends SimpleSwingApplication {
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon2" => {
           maaraT = teksti
-          output.append("\nSyötä yksikkö")
+          output.append("\nSyötä yksikkö.\nMahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm")
           tila = "lisaaVarastoon3"
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon3" => {
@@ -382,7 +382,7 @@ object GUI extends SimpleSwingApplication {
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon4" => {
           tiheysT = teksti.toLowerCase()
-          output.append("\nSyötä mahdollinen allergeeni, muuten tyhjä rivi")
+          output.append("\nSyötä mahdollinen allergeeni, muuten tyhjä rivi.")
           tila = "lisaaVarastoon5"
         } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon5" => {
@@ -409,7 +409,7 @@ object GUI extends SimpleSwingApplication {
         } //----------------------------------------------------------------------------------------------------------
         case "vahennaVarastosta2" => {
           maaraT = teksti
-          output.append("\nSyötä yksikkö.")
+          output.append("\nSyötä yksikkö.\nMahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm")
           tila = "vahennaVarastosta3"
         } //----------------------------------------------------------------------------------------------------------
         case "vahennaVarastosta3" => {
@@ -459,12 +459,13 @@ object GUI extends SimpleSwingApplication {
       tila match {
         //----------------------------------------------------------------------------------------------------------
         case "valitse2" => {
-          output.text = reseptikirja.reseptit(teksti).toString()
+          if(!teksti.isEmpty())output.text = reseptikirja.reseptit(teksti).toString()
+          else output.text = "Yksikään resepti ei vastannut syötettäsi "+teksti
           nollaaTila()
         } //----------------------------------------------------------------------------------------------------------
         case _ => {
           if (reseptit.isEmpty) {
-            output.text = "Yhtään reseptiä ei löytynyt nimellä " + nimiT
+            output.text = "Yhtään reseptiä ei löytynyt nimellä " + nimiT+"."
             nollaaTila()
           } else if (reseptit.size == 1) {
             val resepti = reseptit(0)

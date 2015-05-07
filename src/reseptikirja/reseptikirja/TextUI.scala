@@ -194,6 +194,7 @@ object TextUI extends App {
         val nimiA = readLine()
         print("Syötä määrä: ")
         val maara = readLine()
+        println("Mahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm")
         print("Syötä yksikkö: ")
         val yksikko = readLine()
         if (!nimiA.isEmpty()) aineet += ((nimiA, maara.toDouble, yksikko))
@@ -222,7 +223,7 @@ object TextUI extends App {
   def tulostaVarasto {
     println
     println("Varastosta löytyvät aineet: ")
-    println("nimi|määrä|yksikkö|tiheys(g/l)|mahdollinen allergeeni")
+    println("nimi | määrä | yksikkö | tiheys(g/l) | mahdollinen allergeeni")
     reseptikirja.varasto.values.foreach { println(_) }
   }
   
@@ -233,6 +234,7 @@ object TextUI extends App {
       val nimi = readLine()
       print("Syötä määrä: ")
       val maara = readLine().toDouble
+      println("Mahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm")
       print("Syötä yksikkö: ")
       val yksikko = readLine()
       if (reseptikirja.varasto.contains(nimi)) {
@@ -261,6 +263,7 @@ object TextUI extends App {
       val nimi = readLine()
       print("Syötä vähennettävä määrä: ")
       val maara = readLine().toDouble
+      println("Mahdolliset yksiköt: g, kg, l, dl, rkl, tl, mm")
       print("Syötä yksikkö: ")
       val yksikko = readLine()
       if (reseptikirja.varasto.contains(nimi)) {
