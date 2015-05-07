@@ -18,16 +18,17 @@ import scala.collection.mutable._
 object GUI extends SimpleSwingApplication {
 
   val frame = new MainFrame {
-
+    // Ikkunan ominaisuudet kuntoon
     title = "Reseptikirja"
-    minimumSize = new Dimension(550, 700)
-    preferredSize = new Dimension(600, 700)
+    minimumSize = new Dimension(550, 430)
+    preferredSize = new Dimension(600, 500)
     resizable = true
     visible = true
     peer.setLocationRelativeTo(null)
 
+    // Alustetaan kirja
     val reseptikirja = new Reseptikirja
-
+    // V‰liaikaisia muuttujia syˆtteit‰ varten
     var teksti = ""
     var allergeeniT = ""
     var nimiT = ""
@@ -40,29 +41,39 @@ object GUI extends SimpleSwingApplication {
     var tila = "main"
     var reseptitT = Buffer.empty[Resepti]
 
+    // Tehd‰‰n yl‰valikko, johon ohjelman sukeminen ja reseptien/varaston tallentaminen
     this.menuBar = new MenuBar {
       contents += new Menu("Ohjelma") {
-        val quitAction = Action("Sammuta") {
+        val tallennaReseptit = Action("Tallenna reseptit") {
+          reseptikirja.tallennaReseptit
+        }
+        val (tallennaVarasto) = Action("Tallenna varasto") {
+          reseptikirja.tallennaVarasto
+        }
+        val sammuta = Action("Sulje") {
           reseptikirja.tallennaReseptit
           reseptikirja.tallennaVarasto
           dispose()
         }
-        contents += new MenuItem(quitAction)
+        contents += new MenuItem(tallennaReseptit)
+        contents += new MenuItem(tallennaVarasto)
+        contents += new MenuItem(sammuta)
       }
     }
-
-    val contentHolder = new BorderPanel()
-
+    // Ikkunan sis‰lle paneeli johon asiat tulee
+    val sisalto = new BorderPanel()
+    // Tulostelaatikko
     val output = new TextArea(35, 50) {
       editable = false
       wordWrap = true
       lineWrap = true
       text = "Tervetuloa k‰ytt‰m‰‰n reseptikirjaa.\nValitse haluamasi toiminto vasemmalta laidalta, ja seuraa ohjeita n‰ytˆll‰."
     }
-
+    // Input laatikko ja sille kuuntelu
     val input = new TextField(20)
-
     this.listenTo(input.keys)
+
+    // Tehd‰‰n kaikki napit ja niille kuuntelut
 
     val etsiNimiNappi = new Button
     etsiNimiNappi.background = java.awt.Color.lightGray
@@ -109,32 +120,46 @@ object GUI extends SimpleSwingApplication {
     poistaVarastostaNappi.text = "Poista varastosta"
     listenTo(poistaVarastostaNappi)
 
+    // Paneeli napeille ja lis‰t‰‰n napit sinne.
+    // Mukana pari tyhj‰‰ labelia jotta erottelu onnistuu n‰timmin
     val napit = new BoxPanel(swing.Orientation.Vertical)
     napit.visible = true
-
-    napit.minimumSize = new Dimension(200, 700)
     napit.contents += new Label(" ")
-    napit.contents += new Label("             Etsi reseptej‰")
+    napit.contents += new Label("Etsi reseptej‰")
     napit.contents += etsiNimiNappi
     napit.contents += etsiKotonaNappi
     napit.contents += etsiAinesNappi
     napit.contents += new Label(" ")
-    napit.contents += new Label("           Hallinnoi reseptej‰")
+    napit.contents += new Label("Hallinnoi reseptej‰")
     napit.contents += lisaaReseptiNappi
     napit.contents += poistaReseptiNappi
     napit.contents += new Label(" ")
-    napit.contents += new Label("            Hallinnoi varastoa")
+    napit.contents += new Label("Hallinnoi varastoa")
     napit.contents += tarkistaVarastoNappi
     napit.contents += lisaaVarastoonNappi
     napit.contents += vahennaVarastostaNappi
     napit.contents += poistaVarastostaNappi
 
-    contentHolder.layout(napit) = BorderPanel.Position.West
-    contentHolder.layout(output) = BorderPanel.Position.Center
-    contentHolder.layout(input) = BorderPanel.Position.South
+    // Tehd‰‰n viel‰ koko kuntoon
+    val dimensio = new Dimension(200, 25)
+    for (x <- napit.contents) {
+      x.preferredSize = dimensio
+      x.minimumSize = dimensio
+      x.maximumSize = dimensio
+    }
 
-    contents = contentHolder
+    // Asetellaan asiat paikoilleen
+    sisalto.layout(napit) = BorderPanel.Position.West
+    sisalto.layout(output) = BorderPanel.Position.Center
+    sisalto.layout(input) = BorderPanel.Position.South
+
+    // Todetaan ett‰ sis‰ltˆ on mit‰ aikaisemmin lis‰ttiin
+    contents = sisalto
+
+    // Tehd‰‰n reaktiot kuntoon.
     reactions += {
+      // Napeista ohjataan oikeaan metodiin tekstin perusteella. Tila nollataan ennen eteenp‰inmenoa
+      // jotta ei tule logiikkakonflikteja
       case click: ButtonClicked =>
         val lahde = click.source
         nollaaTila()
@@ -150,6 +175,7 @@ object GUI extends SimpleSwingApplication {
           case "Poista varastosta" => poistaVarastosta
           case _ =>
         }
+      // Entterin painalluksista reagoidaan tilan mukaan ohjaten oikeaan metodiin
       case KeyPressed(_, Key.Enter, _, _) => {
         teksti = input.text
         input.text = ""
@@ -163,122 +189,148 @@ object GUI extends SimpleSwingApplication {
         else if (tila.contains("lisaaVarastoon")) lisaaVarastoon
         else if (tila.contains("vahennaVarastosta")) vahennaVarastosta
         else if (tila.contains("poistaVarastosta")) poistaVarastosta
-
       }
     }
 
+    // --- erottaa caset toisistaan
+
+    // Seuraavat metodit toimivat seuraavanlaisella logiikalla:
+    // Klikataan nappia (esim. etsi nimen perusteella) -> reaktioista siirryt‰‰n metodiin etsiNimella
+    // etsiNimell‰ matchaa tilan ensin "main" -> tehd‰‰n asiat, lopuksi vaihdetaan tilaksi "etsiNimella1"
+    // K‰ytt‰j‰ syˆtt‰‰ tekstin ja painaa entteri‰ -> reaktioista p‰‰dyt‰‰n takaisin etsiNimella metodiin
+    // tila matchataan "etsiNimella1" -> tehd‰‰n asiat, lopuksi tila = "etsiNimella2"
+    // Taas k‰ytt‰j‰n syˆte ja enter -> reaktioista p‰‰dyt‰‰n taas etsiNimella metodiin
+    // match "etsiNimella2" -> tehd‰‰n asiat, tilaksi tulee "valitse" ja kutsutaan valitseResepti metodia
+    // valitseReseptit matchaa taas tilan ja tekee toimintonsa. Kun t‰m‰ tie on saatu loppuun ja toiminnot tehty,
+    // kutsutaan nollaaTila() joka tyhjent‰‰ v‰liaikaiset muuttujat ja palauttaa tilaksi "main"
+    // T‰ten ollaan taas alkutilanteessa.
+
+    // Metodien tapahtumat ovat suoraviivaisi, niiss‰ kutsutaan taustalla olevien luokkien metodeita kun ollaan ensin
+    // ker‰tty tarvittavat syˆtteet. N‰ist‰ saadut tulokset sitten tulostetaan tarvittaessa.
+
+    // Etsit‰‰n reseptin nimell‰.
     def etsiNimella {
       tila match {
+        //---------------------------------------------------------------------------------------------------------- 
         case "main" => {
           output.text = "Etsi reseptin nimell‰."
           kysyAllergeeni
           tila = "etsiNimella1"
-        }
+        } //---------------------------------------------------------------------------------------------------------- 
         case "etsiNimella1" => {
           allergeeniT = teksti
           output.append("\nAllergeeni: " + allergeeniT + "\nSyˆt‰ etsitt‰v‰ nimi.")
           tila = "etsiNimella2"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "etsiNimella2" => {
           nimiT = teksti
           val reseptit = reseptikirja.etsija.nimi(nimiT, reseptikirja.reseptit, reseptikirja.varasto, allergeeniT)
           tila = "valitse"
           valitseResepti(reseptit)
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
     def etsiAine {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           output.text = "Etsi k‰ytett‰v‰ll‰ ainesosalla."
           kysyAllergeeni
           tila = "etsiAine1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "etsiAine1" => {
           allergeeniT = teksti
           output.append("\nAllergeeni: " + allergeeniT + "\nSyˆt‰ etsitt‰v‰n ainesosan nimi.")
           tila = "etsiAine2"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "etsiAine2" => {
           nimiT = teksti
           val reseptit = reseptikirja.etsija.ainesOsa(nimiT, reseptikirja.reseptit, reseptikirja.varasto, allergeeniT)
           tila = "valitse"
           valitseResepti(reseptit)
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
     def etsiKotona {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           output.text = "Etsit‰‰n kotona olevista ainesosista teht‰viss‰ olevat."
           kysyAllergeeni
           tila = "etsiKotona1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "etsiKotona1" => {
           allergeeniT = teksti
           output.append("\nAllergeeni: " + allergeeniT + "\nSyˆt‰ maksimim‰‰r‰ puuttuvia ainesosia.")
           tila = "etsiKotona2"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "etsiKotona2" => {
           maaraT = teksti
           val maara = if (maaraT.isEmpty()) 0 else maaraT.toInt
-          val reseptit = reseptikirja.etsija.varastossa(maara, reseptikirja.reseptit, reseptikirja.varasto, allergeeniT)
+          val reseptit = reseptikirja.etsija.kotona(maara, reseptikirja.reseptit, reseptikirja.varasto, allergeeniT, reseptikirja.muunnos)
           valitseResepti(reseptit)
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
     def lisaaResepti {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           output.text = "Luodaan uusi resepti.\nSyˆt‰ reseptin nimi."
           input.requestFocus()
           tila = "lisaaResepti1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaResepti1" => {
-          nimiT = teksti
-          output.append("\nReseptin nimi on " + nimiT + "\nSyˆt‰ aineen nimi. Kun kaikki aineet on lis‰tty, syˆt‰ tyhj‰ rivi.")
-          tila = "lisaaReseptiAine"
-        }
+          nimiT = teksti.trim()
+          if (reseptikirja.reseptit.contains(nimiT)) {
+            output.text = "Resepti " + nimiT + " on jo olemassa."
+            tila = "main"
+          } else {
+            output.append("\nReseptin nimi on " + nimiT + "\nSyˆt‰ aineen nimi. Kun kaikki aineet on lis‰tty, syˆt‰ tyhj‰ rivi.")
+            tila = "lisaaReseptiAine"
+          }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiAine" => {
           if (teksti.isEmpty()) {
             output.text = "Syˆt‰ ohje.(Huom. ei rivinvaihtoja!)"
             tila = "lisaaReseptiOhje"
           } else {
-            aineNimiT = teksti
+            aineNimiT = teksti.trim()
             output.text = "Syˆt‰ m‰‰r‰ ilman yksikkˆ‰."
             tila = "lisaaReseptiMaara"
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiMaara" => {
           maaraT = teksti
           output.text = "Syˆt‰ yksikkˆ."
           tila = "lisaaReseptiYksikko"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiYksikko" => {
-          yksikkoT = teksti
+          yksikkoT = teksti.trim()
           output.text = "Syˆt‰ seuraavan aineen nimi, tai lopuksi tyhj‰ rivi."
           tila = "lisaaReseptiAine"
           aineetT += ((aineNimiT, maaraT.toDouble, yksikkoT))
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaReseptiOhje" => {
-          ohjeT = teksti
+          ohjeT = teksti.trim()
           reseptikirja.lisaaResepti(nimiT, aineetT.toVector, ohjeT)
           output.text = "Resepti lis‰tty."
           nollaaTila()
-        }
+        } //----------------------------------------------------------------------------------------------------------
 
       }
     }
 
     def poistaResepti {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           output.text = "Syˆt‰ poistettavan reseptin nimi."
           tila = "poistaResepti1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "poistaResepti1" => {
           if (reseptikirja.reseptit.contains(teksti)) {
             reseptikirja.poistaResepti(teksti)
@@ -288,7 +340,7 @@ object GUI extends SimpleSwingApplication {
             output.text = "Resepti‰ " + teksti + " ei lˆydetty!"
             nollaaTila()
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
@@ -299,21 +351,22 @@ object GUI extends SimpleSwingApplication {
 
     def lisaaVarastoon {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           input.requestFocus()
           output.text = "Lis‰t‰‰n aine varastoon.\nSyˆt‰ aineen nimi."
           tila = "lisaaVarastoon1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon1" => {
           nimiT = teksti.toLowerCase()
           output.append("\nSyˆt‰ aineen m‰‰r‰ ilman yksikkˆ‰.")
           tila = "lisaaVarastoon2"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon2" => {
           maaraT = teksti
           output.append("\nSyˆt‰ yksikkˆ")
           tila = "lisaaVarastoon3"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon3" => {
           yksikkoT = teksti.toLowerCase()
           if (reseptikirja.varasto.contains(nimiT.toLowerCase())) {
@@ -326,38 +379,39 @@ object GUI extends SimpleSwingApplication {
             output.append("\nSyˆt‰ tiheys(g/l)")
             tila = "lisaaVarastoon4"
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon4" => {
           tiheysT = teksti.toLowerCase()
           output.append("\nSyˆt‰ mahdollinen allergeeni, muuten tyhj‰ rivi")
           tila = "lisaaVarastoon5"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "lisaaVarastoon5" => {
           val rivi = nimiT + ", " + maaraT + ", " + yksikkoT + ", " + tiheysT + ", " + teksti
           reseptikirja.lisaaVarastoon(rivi)
           output.text = "Aine lis‰tty onnistuneesti."
           nollaaTila()
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
     def vahennaVarastosta {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           input.requestFocus()
           output.text = "Syˆt‰ v‰hennett‰v‰n aineen nimi."
           tila = "vahennaVarastosta1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "vahennaVarastosta1" => {
           nimiT = teksti.toLowerCase()
           output.append("\nSyˆt‰ v‰hennett‰v‰ m‰‰r‰ ilman yksikkˆ‰.")
           tila = "vahennaVarastosta2"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "vahennaVarastosta2" => {
           maaraT = teksti
           output.append("\nSyˆt‰ yksikkˆ.")
           tila = "vahennaVarastosta3"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "vahennaVarastosta3" => {
           yksikkoT = teksti.toLowerCase()
           if (reseptikirja.varasto.contains(nimiT)) {
@@ -369,17 +423,18 @@ object GUI extends SimpleSwingApplication {
             output.text = "Ainetta " + nimiT.toLowerCase() + " ei lˆydetty!"
             nollaaTila()
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
     def poistaVarastosta {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "main" => {
           input.requestFocus()
           output.text = "Syˆt‰ poistettavan aineen nimi."
           tila = "poistaVarastosta1"
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case "poistaVarastosta1" => {
           if (reseptikirja.varasto.contains(teksti.toLowerCase())) {
             reseptikirja.poistaAine(teksti.toLowerCase())
@@ -389,21 +444,24 @@ object GUI extends SimpleSwingApplication {
             output.text = "Ainetta " + teksti.toLowerCase() + " ei lˆydetty!"
             nollaaTila()
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
     }
 
+    // Kysyy k‰ytt‰j‰lt‰ allergeenin. Kutsutaan aina ensin reseptej‰ etsitt‰ess‰.
     def kysyAllergeeni = {
       output.append("\nSyˆt‰ ensin poisj‰tett‰v‰ allergeeni tai tyhj‰ rivi.")
       input.requestFocus()
     }
 
+    // Hoitaa hakutuloksista halutun reseptin valitsemisen ja tulostaa lopulta sen.
     def valitseResepti(reseptit: Buffer[Resepti]) {
       tila match {
+        //----------------------------------------------------------------------------------------------------------
         case "valitse2" => {
           output.text = reseptikirja.reseptit(teksti).toString()
           nollaaTila()
-        }
+        } //----------------------------------------------------------------------------------------------------------
         case _ => {
           if (reseptit.isEmpty) {
             output.text = "Yht‰‰n resepti‰ ei lˆytynyt nimell‰ " + nimiT
@@ -419,25 +477,28 @@ object GUI extends SimpleSwingApplication {
             reseptitT = reseptit
             tila = "valitse2"
           }
-        }
+        } //----------------------------------------------------------------------------------------------------------
       }
 
     }
-
+    
+    // Vaihtaa tilaksi "main" ja nollaa kaikki v‰liaikaismuuttujat. N‰in varmistutaan ett‰i jouduta v‰‰r‰‰n paikkaan v‰‰r‰‰n aikaan.
     def nollaaTila() {
       teksti = ""
       allergeeniT = ""
       nimiT = ""
+      aineNimiT = ""
       maaraT = ""
       yksikkoT = ""
       tiheysT = ""
       ohjeT = ""
+      aineetT = Buffer.empty[(String, Double, String)]
       tila = "main"
       reseptitT = Buffer.empty[Resepti]
     }
 
   }
-
+  
   val top = frame
 
 }
