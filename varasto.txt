@@ -1,8 +1,10 @@
+jauheliha, 400.0, g, 3000, 
 voi, 1.0, l, 1000, 
 suola, 4.0, dl, 1000, 
-maito, 1.8, l, 2000, laktoosi
+kirjolohi, 2.0, kg, 800, kala
+maito, 4.8, l, 2000, laktoosi
 muna, 3.0, kpl, 1200, 
 kahvi, 500.0, g, 500, 
 peruna, 5.0, kpl, 1500, 
-makkara, 2.0, kpl, 1000, liha
-vesi, 11.0, l, 1000, 
+makkara, 2.0, kpl, 1000, 
+vesi, 666.6, l, 1000, 

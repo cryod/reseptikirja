@@ -1,10 +1,16 @@
-#
-0
-
+#jauhelihapihvit
+6
+jauheliha, 400.0, g
+kananmuna, 2.0, kpl
+korppujauho, 1.0, dl
+suola, 1.0, tl
+mustapippuri, 1.0, TL
+sipuli, 1.0, kpl
+Sekoita jauheliha, kananmunat, korppujauhot, mausteet sekä silputut sipulit. Pyöritä hyvin sekoitetusta taikinasta pullia ja paista 200:ssa asteessa 20 minuuttia.
 #pulla
 1
 voitaikina, 4.0, dl
-asdfasdfasdf
+Kyllä, se valmistuu näin.
 #makkarasoosi
 3
 makkara, 1.0, kpl
@@ -17,10 +23,15 @@ peruna, 5.0, kpl
 suola, 2.0, tl
 maito, 1.0, dl
 Muussaa perunat, lisää kerma ja suola. Sekoita lisää. Tarjoile
+#kalakeitto
+2
+kirjolohi, 1.0, kg
+vesi, 2.0, l
+Perkaa lohi, keitä vesi. Kyllä se melkein näin pitäisi jo valmistua.
 #voitaikina
 1
 voi, 1.0, dl
-fdsaasdf
+Saattaa tarvita muitakin aineita. Ja ohjeen. :(
 #perunakeitto
 2
 peruna, 5.0, kpl
